@@ -13,8 +13,8 @@ let rules = [
     withMapper(['left_arrow', 'right_arrow'])((key) =>
       map(key, 'control', 'shift').to(key, 'option'),
     ),
-    map('home', '', 'shift').to('left_arrow', 'fn'),
-    map('end', '', 'shift').to('right_arrow', 'fn'),
+    map('home', '', 'shift').to('left_arrow', 'command'),
+    map('end', '', 'shift').to('right_arrow', 'command'),
     map('delete_or_backspace', 'control').to('delete_or_backspace', 'option'),
   ]),
 
@@ -37,7 +37,7 @@ let rules = [
     map('return_or_enter', 'control').to('return_or_enter', 'command'),
   ]),
 
-  rule('Windows', ifApp('com.microsoft.VSCode').unless()).manipulators([
+  rule('Windows').manipulators([
     withMapper(stringToChars('afszxcv'))((key) =>
       map(key, 'control').to(key, 'command'),
     ),
