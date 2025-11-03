@@ -39,7 +39,7 @@ let rules = [
 
   rule('Windows').manipulators([
     withMapper(stringToChars('afszxcv'))((key) =>
-      map(key, 'control').to(key, 'command'),
+      map(key, 'control', ['shift']).to(key, 'command'),
     ),
   ]),
 
