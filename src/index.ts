@@ -8,6 +8,11 @@ import {
   withModifier,
 } from 'karabiner.ts'
 
+const globalWindowsKey = stringToChars('afszxcv');
+
+// Windows keys for 'c' are excluded for terminals to allow ctrl+c to kill
+const terminalBundles = ['com.googlecode.iterm2', 'com.cmuxterm.app'];
+
 let rules = [
   rule('Text navigation').manipulators([
     withMapper(['left_arrow', 'right_arrow'])((key) =>
@@ -26,6 +31,23 @@ let rules = [
     }),
   ]),
 
+  rule('Windows', ifApp(terminalBundles).unless()).manipulators([
+    withMapper(globalWindowsKey)((key) =>
+      map(key, 'control', ['shift']).to(key, 'command'),
+    ),
+  ]),
+
+  rule('Terminals', ifApp(terminalBundles).unless()).manipulators([
+    withMapper(globalWindowsKey.filter(c => c == 'c'))((key) =>
+      map(key, 'control', ['shift']).to(key, 'command'),
+    ),
+  ]),
+
+  rule('Screenshotting').manipulators([
+    map('f4', ['command']).to('4', ['control', 'shift', 'command']),
+    map('f5', ['command']).to('5', ['shift', 'command']),
+  ]),
+
   rule('Browser', ifApp(['com.brave.Browser', "com.google.Chrome"])).manipulators([
     map('f5').to('r', 'command'),
     withMapper(stringToChars('twl'))((key) =>
@@ -35,12 +57,6 @@ let rules = [
 
   rule('Slack', ifApp('com.tinyspeck.slackmacgap')).manipulators([
     map('return_or_enter', 'control').to('return_or_enter', 'command'),
-  ]),
-
-  rule('Windows').manipulators([
-    withMapper(stringToChars('afszxcv'))((key) =>
-      map(key, 'control', ['shift']).to(key, 'command'),
-    ),
   ]),
 
   rule('Rider (using MacOS keymap)', ifApp('com.jetbrains.rider')).manipulators(
