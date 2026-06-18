@@ -8,10 +8,16 @@ import {
   withModifier,
 } from 'karabiner.ts'
 
-const globalWindowsKey = stringToChars('afszxcv');
+const globalWindowsKey = stringToChars('afszxcvtwl');
 
-// Windows keys for 'c' are excluded for terminals to allow ctrl+c to kill
-const terminalBundles = ['com.googlecode.iterm2', 'com.cmuxterm.app'];
+/**
+ * Windows keys for 'c' are excluded for terminals to allow ctrl+c to kill
+ * cmux is excluded because it has this line to enable cmd+c to kill
+ * ~/.config/ghostty/config:
+ * keybind = cmd+c=text:\x03
+ */
+const terminalBundles = ['com.googlecode.iterm2'];
+const browserBundles = ['com.brave.Browser', "com.google.Chrome"];
 
 let rules = [
   rule('Text navigation').manipulators([
@@ -39,6 +45,8 @@ let rules = [
 
   rule('Terminals', ifApp(terminalBundles).unless()).manipulators([
     withMapper(globalWindowsKey.filter(c => c == 'c'))((key) =>
+      // excluding c so that ctrl+c can kill terminal
+      // can remove handling if the terminal is manually configured to rebind cmd+c to kill instead
       map(key, 'control', ['shift']).to(key, 'command'),
     ),
   ]),
@@ -48,11 +56,8 @@ let rules = [
     map('f5', ['command']).to('5', ['shift', 'command']),
   ]),
 
-  rule('Browser', ifApp(['com.brave.Browser', "com.google.Chrome"])).manipulators([
+  rule('Browser', ifApp(browserBundles)).manipulators([
     map('f5').to('r', 'command'),
-    withMapper(stringToChars('twl'))((key) =>
-      map(key, 'control', 'shift').to(key, 'command'),
-    ),
   ]),
 
   rule('Slack', ifApp('com.tinyspeck.slackmacgap')).manipulators([
