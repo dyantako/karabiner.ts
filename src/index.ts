@@ -18,6 +18,7 @@ const globalWindowsKey = stringToChars('afszxcvtwl');
  */
 const terminalBundles = ['com.googlecode.iterm2'];
 const browserBundles = ['com.brave.Browser', "com.google.Chrome"];
+const jetbrainsBundles = ['com.jetbrains.rider'];
 
 let rules = [
   rule('Text navigation').manipulators([
@@ -43,8 +44,8 @@ let rules = [
     ),
   ]),
 
-  rule('Terminals', ifApp(terminalBundles).unless()).manipulators([
-    withMapper(globalWindowsKey.filter(c => c == 'c'))((key) =>
+  rule('Terminals', ifApp(terminalBundles)).manipulators([
+    withMapper(globalWindowsKey.filter(key => key !== 'c'))((key) =>
       // excluding c so that ctrl+c can kill terminal
       // can remove handling if the terminal is manually configured to rebind cmd+c to kill instead
       map(key, 'control', ['shift']).to(key, 'command'),
@@ -64,7 +65,7 @@ let rules = [
     map('return_or_enter', 'control').to('return_or_enter', 'command'),
   ]),
 
-  rule('Rider (using MacOS keymap)', ifApp('com.jetbrains.rider')).manipulators(
+  rule('Rider (using MacOS keymap)', ifApp(jetbrainsBundles)).manipulators(
     [
       map('p', 'control', 'shift').to('p', 'command'),
       withMapper(stringToChars('/'))((key) =>
