@@ -17,7 +17,7 @@ const globalWindowsKey = stringToChars('afszxcvtwl');
  * keybind = cmd+c=text:\x03
  */
 const terminalBundles = ['com.googlecode.iterm2'];
-const browserBundles = ['com.brave.Browser', "com.google.Chrome"];
+const browserBundles = ['com.brave.Browser', 'com.google.Chrome'];
 const jetbrainsBundles = ['com.jetbrains.rider'];
 
 let rules = [
@@ -40,7 +40,7 @@ let rules = [
 
   rule('Windows', ifApp(terminalBundles).unless()).manipulators([
     withMapper(globalWindowsKey)((key) =>
-      map(key, 'control', ['shift']).to(key, 'command'),
+      map(key, 'control', 'shift').to(key, 'command'),
     ),
   ]),
 
@@ -48,13 +48,13 @@ let rules = [
     withMapper(globalWindowsKey.filter(key => key !== 'c'))((key) =>
       // excluding c so that ctrl+c can kill terminal
       // can remove handling if the terminal is manually configured to rebind cmd+c to kill instead
-      map(key, 'control', ['shift']).to(key, 'command'),
+      map(key, 'control', 'shift').to(key, 'command'),
     ),
   ]),
 
   rule('Screenshotting').manipulators([
-    map('f4', ['command']).to('4', ['control', 'shift', 'command']),
-    map('f5', ['command']).to('5', ['shift', 'command']),
+    map('f4', 'command').to('4', ['control', 'shift', 'command']),
+    map('f5', 'command').to('5', ['shift', 'command']),
   ]),
 
   rule('Browser', ifApp(browserBundles)).manipulators([
@@ -73,15 +73,15 @@ let rules = [
       ),
     ],
   ),
-]
+];
 
-writeToProfile("default", rules);
+writeToProfile('default', rules);
 
 function stringToChars<S extends string>(str: S): StringToChars<S> {
-  return str.split('') as StringToChars<S>
+  return str.split('') as StringToChars<S>;
 }
 
 // Helper type: Recursively split string literal into tuple of characters
 type StringToChars<S extends string> = S extends `${infer First}${infer Rest}`
   ? [First, ...StringToChars<Rest>]
-  : []
+  : [];
