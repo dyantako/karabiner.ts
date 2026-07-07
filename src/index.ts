@@ -11,14 +11,17 @@ import {
 const globalWindowsKey = stringToChars('afszxcvtwl');
 
 /**
- * Windows keys for 'c' are excluded for terminals to allow ctrl+c to kill
+ * Windows keys for 'c' are excluded for some terminals to allow ctrl+c to kill
  * cmux is excluded because it has this line to enable cmd+c to kill
  * ~/.config/ghostty/config:
  * keybind = cmd+c=text:\x03
+ *
+ * For everything else, it MUST contextually rebind cmd+c to SIGINT when there is no text selection if possible
+ * Note to self, maybe try to just use ctrl+d on mac instead
  */
 const terminalBundles = ['com.googlecode.iterm2'];
 const browserBundles = ['com.brave.Browser', 'com.google.Chrome'];
-const jetbrainsBundles = ['com.jetbrains.rider'];
+const jetbrainsBundles = ['com.jetbrains.rider', 'com.google.android.studio'];
 
 let rules = [
   rule('Text navigation').manipulators([
@@ -65,9 +68,12 @@ let rules = [
     map('return_or_enter', 'control').to('return_or_enter', 'command'),
   ]),
 
-  rule('Rider (using MacOS keymap)', ifApp(jetbrainsBundles)).manipulators(
+  rule('Rider (using VSCode MacOS keymap)', ifApp(jetbrainsBundles)).manipulators(
     [
       map('p', 'control', 'shift').to('p', 'command'),
+      map('tab', ['control', 'shift']).to('[', ['command', 'shift']),
+      map('tab', ['control']).to(']', ['command', 'shift']),
+      map('l', ['option', 'shift']).to('k', 'command').to('e'),
       withMapper(stringToChars('/'))((key) =>
         map(key, 'control').to(key, 'command'),
       ),
